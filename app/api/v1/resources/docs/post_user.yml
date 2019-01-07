@@ -1,0 +1,45 @@
+Endpoint that creates a user
+---
+tags:
+  - User
+parameters:
+  - name: body
+    description: user registration data
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "first_name"
+        - "last_name"
+        - "username"
+      properties:
+        first_name:
+          type: "string"
+          example: "Elijah"
+        last_name:
+          type: "string"
+          example: "Rwothoromo"
+        username:
+          type: "string"
+          example: "milk-tumbler"
+
+responses:
+  201:
+    description: User added
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "User added"
+  409:
+    description: User already exists
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "User already exists"

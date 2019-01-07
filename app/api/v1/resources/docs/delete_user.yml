@@ -1,0 +1,30 @@
+Endpoint that deletes a user
+---
+tags:
+  - User
+parameters:
+  - name: user_id
+    description: user id
+    type: integer
+    in: path
+    required: true
+
+responses:
+  200:
+    description: User deleted
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "User deleted"
+  404:
+    description: User not found
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "User not found"

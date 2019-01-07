@@ -1,0 +1,19 @@
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+# Matches multiple files with brace expansion notation
+[*.{yml}]
+indent_size = 2
+
+# Matches multiple files with brace expansion notation
+[*.{js,jsx,html,sass,json,yaml,yml}]
+charset = utf-8
+indent_style = tab
+indent_size = 4
+trim_trailing_whitespace = true
+
+[*.md]
+trim_trailing_whitespace = false

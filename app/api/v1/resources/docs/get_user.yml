@@ -1,0 +1,27 @@
+Endpoint that retrieves a user
+---
+tags:
+  - User
+parameters:
+  - name: user_id
+    description: user id
+    type: integer
+    in: path
+    required: true
+responses:
+  200:
+    description: A user
+    schema:
+      type: object
+      properties:
+        user:
+          type: array
+  404:
+    description: User not found
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "User not found"

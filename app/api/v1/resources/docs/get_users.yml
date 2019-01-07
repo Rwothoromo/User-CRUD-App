@@ -1,0 +1,32 @@
+Endpoint that retrieves all users
+---
+tags:
+  - User
+parameters:
+  - name: q
+    description: Search user by name e.g "ond"
+    type: string
+    in: query
+    required: false
+  - name: limit
+    description: Limit number of results per page e.g 13
+    type: integer
+    in: query
+    required: false
+responses:
+  200:
+    description: A list of created users
+    schema:
+      type: object
+      properties:
+        users:
+          type: array
+  404:
+    description: No user found
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "No user found"
