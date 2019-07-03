@@ -12,9 +12,9 @@ from flask_cors import CORS
 
 # local imports
 from config import app_config
-from app.db import db
+from api.db import db
 
-from app.api.v1.resources.user import UserCollection, UserResource
+from api.v1.user import UserCollection, UserResource
 
 app = Flask(__name__)
 flask_config = os.environ.get('FLASK_CONFIG', 'production')

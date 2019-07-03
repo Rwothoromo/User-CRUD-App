@@ -1,6 +1,6 @@
 # app/models/user.py
 
-from app.db import db
+from api.db import db
 
 
 class User(db.Model):
