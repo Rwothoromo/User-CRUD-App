@@ -13,6 +13,7 @@ from flask_cors import CORS
 # local imports
 from config import app_config
 from app.db import db
+from app.models import category
 
 from app.api.v1.resources.user import UserCollection, UserResource
 
