@@ -5,8 +5,8 @@ from flask_restful import Resource
 from flask_restful.reqparse import RequestParser
 from flasgger import swag_from
 
-from app.db import db
-from app.models.user import User
+from api.db import db
+from api.v1.models.user import User
 
 
 # RequestParser and added arguments will know which fields to accept and how to validate those
