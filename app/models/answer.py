@@ -5,18 +5,27 @@ class Answer(db.Model):
     __tablename__ = 'answers'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(200), nullable=False)
-    # user_id = db.Column(db.String(50), nullable=False, unique=True)
+    question = db.Column(db.Integer, db.ForeignKey('questions.id'))
+    created_by = db.Column(db.Integer, db.ForeignKey('users.id'))
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(
     ), onupdate=db.func.current_timestamp())
+    author = db.relationship("User")
 
-    def __init__(self, title, description=None):
-        self.title = title
+    def __init__(self, question, description=None):
         self.description = description
-        # self.question = question
+        self.question = question
 
     # Represent the object when it is queried
     def __repr__(self):
-        return '<Question: {}\{}>'.format(self.title, self.description)
+        return '<Answer: {}>'.format(self.description)
+
+    def answer_as_dict(self):
+        """Represent the question as a dict"""
+
+        answer = {r.description: getattr(self, r.description)
+                  for r in self.__table__.columns}
+        answer['author'] = self.author.first_name + \
+            ' ' + self.author.last_name
+        return answer

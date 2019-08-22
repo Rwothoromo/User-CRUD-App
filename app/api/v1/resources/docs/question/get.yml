@@ -1,0 +1,27 @@
+Endpoint that retrieves a question
+---
+tags:
+  - Question
+parameters:
+  - name: question_id
+    description: question id
+    type: integer
+    in: path
+    required: true
+responses:
+  200:
+    description: A question
+    schema:
+      type: object
+      properties:
+        question:
+          type: array
+  404:
+    description: Question not found
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Question not found"

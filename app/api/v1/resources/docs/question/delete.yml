@@ -1,0 +1,30 @@
+Endpoint that deletes a question
+---
+tags:
+  - Question
+parameters:
+  - name: question_id
+    description: question id
+    type: integer
+    in: path
+    required: true
+
+responses:
+  200:
+    description: Question deleted
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Question deleted"
+  404:
+    description: Question not found
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Question not found"

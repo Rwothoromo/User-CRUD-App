@@ -1,0 +1,27 @@
+Endpoint that retrieves a category
+---
+tags:
+  - Category
+parameters:
+  - name: category_id
+    description: category id
+    type: integer
+    in: path
+    required: true
+responses:
+  200:
+    description: A category
+    schema:
+      type: object
+      properties:
+        category:
+          type: array
+  404:
+    description: Category not found
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Category not found"

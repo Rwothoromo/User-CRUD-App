@@ -1,0 +1,21 @@
+Endpoint that retrieves all questions
+---
+tags:
+  - Question
+responses:
+  200:
+    description: A list of created questions
+    schema:
+      type: object
+      properties:
+        questions:
+          type: array
+  404:
+    description: No question found
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "No question found"

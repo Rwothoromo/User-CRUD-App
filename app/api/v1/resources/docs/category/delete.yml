@@ -1,0 +1,30 @@
+Endpoint that deletes a category
+---
+tags:
+  - Category
+parameters:
+  - name: category_id
+    description: category id
+    type: integer
+    in: path
+    required: true
+
+responses:
+  200:
+    description: Category deleted
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Category deleted"
+  404:
+    description: Category not found
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Category not found"

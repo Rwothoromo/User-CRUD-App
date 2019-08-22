@@ -1,0 +1,41 @@
+Endpoint that creates a question
+---
+tags:
+  - Question
+parameters:
+  - name: body
+    description: question registration data
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+		- "description"
+        - "category"
+      properties:
+        name:
+          type: "string"
+          example: "What is the distinctive feature of a set in python?"
+        name:
+          type: "string"
+          example: "Data Structures"
+
+responses:
+  201:
+    description: Question added
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Question added"
+  409:
+    description: Question already exists
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Question already exists"

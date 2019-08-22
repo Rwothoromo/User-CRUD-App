@@ -6,15 +6,14 @@ class Category(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(50), nullable=False)
-    description = db.Column(db.String(200), nullable=False)
+    created_by = db.Column(db.Integer, db.ForeignKey('users.id'))
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(
     ), onupdate=db.func.current_timestamp())
 
-    def __init__(self, name, description=None):
+    def __init__(self, name):
         self.name = name
-        self.description = description
 
     # Represent the object when it is queried
     def __repr__(self):
-        return '<Category: {}\{}>'.format(self.name, self.description)
+        return '<Category: {}>'.format(self.name)

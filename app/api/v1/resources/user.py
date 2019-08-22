@@ -1,5 +1,3 @@
-# app/api/resources/user.py
-
 from flask import jsonify, make_response, request, session
 from flask_restful import Resource
 from flask_restful.reqparse import RequestParser
@@ -8,6 +6,7 @@ from sqlalchemy.sql import text
 
 from app.db import db
 from app.models.user import User
+from app.api.v1.resources.helpers import validate_inputs
 
 
 # RequestParser and added arguments will know which fields to accept and how to validate those
@@ -26,17 +25,6 @@ q_request_parser.add_argument(
     "q", type=str, required=False, help="Search user by name")
 
 
-def validate_inputs(args):
-    """Return error message if input is invalid"""
-
-    fifty_character_limit = ['first_name', 'last_name', 'username']
-    for key, value in args.items():
-        valid_length = 50 if key in fifty_character_limit else 256
-        arg_is_invalid = (len(value) > valid_length or not isinstance(value, str) or not value.strip(),
-                          valid_length, key)
-        if arg_is_invalid[0]:
-            return arg_is_invalid
-
 # When we write our Resources, Flask-RESTful generates the routes
 # and the view handlers necessary to represent the resource over RESTful HTTP
 
@@ -44,7 +32,7 @@ def validate_inputs(args):
 class UserCollection(Resource):
     """Operate on a list of users, to view and add them"""
 
-    @swag_from('docs/get_users.yml')
+    @swag_from('docs/user/get_all.yml')
     def get(self):
         """Retrieves all users"""
 
@@ -65,7 +53,7 @@ class UserCollection(Resource):
 
         return make_response(jsonify(users_result), 200)
 
-    @swag_from('docs/post_user.yml')
+    @swag_from('docs/user/post.yml')
     def post(self):
         """Register a user"""
 
@@ -97,7 +85,7 @@ class UserCollection(Resource):
 class UserResource(Resource):
     """Operate on a single User, to view, update and delete it"""
 
-    @swag_from('docs/get_user.yml')
+    @swag_from('docs/user/get.yml')
     def get(self, user_id):
         """Get a user"""
 
@@ -109,7 +97,7 @@ class UserResource(Resource):
 
         return make_response(jsonify({"message": "User not found"}), 404)
 
-    @swag_from('docs/put_user.yml')
+    @swag_from('docs/user/put.yml')
     def put(self, user_id):
         """Updates a user"""
 
@@ -128,12 +116,11 @@ class UserResource(Resource):
             username = args.get("username", None)
 
             # to avoid duplicating a user name
-            user_by_name = User.query.filter_by(username=username).first()
             sql = text(
                 "SELECT * FROM users WHERE username='{}' LIMIT 1".format(username))
             user = db.engine.execute(sql)
             user_result = {'user': [dict(it) for it in user]}
-            if not user_result['user'] or (user_by_name and (user_by_name.id == user_id)):
+            if not user_result['user'] or (user_result['user'] and (user_result['user'].id == user_id)):
                 sql = text("UPDATE users SET first_name='{}', last_name='{}', username='{}' WHERE id='{}'".format(
                     first_name, last_name, username, user_id))
                 db.engine.execute(sql)
@@ -144,7 +131,7 @@ class UserResource(Resource):
 
         return make_response(jsonify({"message": "User not found"}), 404)
 
-    @swag_from('docs/delete_user.yml')
+    @swag_from('docs/user/delete.yml')
     def delete(self, user_id):
         """Delete a user"""
 

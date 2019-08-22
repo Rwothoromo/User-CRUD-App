@@ -1,0 +1,56 @@
+Endpoint that updates a question
+---
+tags:
+  - Question
+parameters:
+  - name: question_id
+    description: question id
+    type: integer
+    in: path
+    required: true
+  - name: body
+    description: question creation data
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+		- "description"
+        - "category"
+      properties:
+        name:
+          type: "string"
+          example: "What is the distinctive feature of a set in python?"
+        name:
+          type: "string"
+          example: "Data Structures"
+
+responses:
+  200:
+    description: Question updated
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Question updated"
+  404:
+    description: Question not found
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Question not found"
+
+  409:
+    description: Question already exists
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Question by that name already exists"

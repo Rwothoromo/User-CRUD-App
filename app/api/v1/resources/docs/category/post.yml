@@ -1,0 +1,37 @@
+Endpoint that creates a category
+---
+tags:
+  - Category
+parameters:
+  - name: body
+    description: category registration data
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "name"
+      properties:
+        name:
+          type: "string"
+          example: "OOP"
+
+responses:
+  201:
+    description: Category added
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Category added"
+  409:
+    description: Category already exists
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Category already exists"
