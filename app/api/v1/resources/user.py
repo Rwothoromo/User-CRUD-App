@@ -4,6 +4,7 @@ from flask import jsonify, make_response, request, session
 from flask_restful import Resource
 from flask_restful.reqparse import RequestParser
 from flasgger import swag_from
+from sqlalchemy.sql import text
 
 from app.db import db
 from app.models.user import User
@@ -23,10 +24,6 @@ user_request_parser.add_argument(
 q_request_parser = RequestParser(bundle_errors=True)
 q_request_parser.add_argument(
     "q", type=str, required=False, help="Search user by name")
-q_request_parser.add_argument(
-    "limit", type=int, required=False, help="users results limit")
-q_request_parser.add_argument(
-    "page", type=int, required=False, help="users results page to view")
 
 
 def validate_inputs(args):
@@ -53,31 +50,18 @@ class UserCollection(Resource):
 
         args = q_request_parser.parse_args()
         q = args.get('q', None)
-        limit = args.get('limit', None)
-        page = args.get('page', 1)
 
         if q:
             q = q.lower()
-            users_query = User.query.order_by(
-                User.username).filter(User.username.ilike('%' + q + '%'))
+            sql = text("SELECT * FROM users WHERE username like '%{}%'".format(q))
         else:
-            users_query = User.query.order_by(User.username)
+            sql = text("SELECT * FROM users ORDER BY username ASC")
 
-        users_query = users_query.paginate(
-            page=page, per_page=limit, error_out=False)
-
-        users = users_query.items
+        users = db.engine.execute(sql)
         if not users:
             return make_response(jsonify({"message": "No user found"}), 404)
 
-        users_list = [user.user_as_dict()
-                      for user in users]
-
-        next_page = users_query.next_num if users_query.has_next else None
-        prev_page = users_query.prev_num if users_query.has_prev else None
-
-        users_result = {"users": users_list,
-                        "next_page": next_page, "prev_page": prev_page}
+        users_result = {'users': [dict(user) for user in users]}
 
         return make_response(jsonify(users_result), 200)
 
@@ -97,9 +81,9 @@ class UserCollection(Resource):
 
         user = User.query.filter_by(username=username).first()
         if not user:
-            user = User(first_name, last_name, username)
-            db.session.add(user)
-            db.session.commit()
+            sql = text("INSERT into users (first_name, last_name, username) VALUES ('{}', '{}', '{}')".format(
+                first_name, last_name, username))
+            db.engine.execute(sql)
 
             return make_response(
                 jsonify({"message": "User added"}), 201)

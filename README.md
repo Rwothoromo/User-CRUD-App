@@ -2,6 +2,8 @@
 
 User-CRUD App
 
+## Endpoints
+
 [View on Heroku](https://user-crud-api-v1-rwothoromo.herokuapp.com/apidocs/)
 
 | EndPoint                                             | Functionality                                    |
@@ -51,10 +53,10 @@ User-CRUD App
 ## Setup --continued
 
 * Run the following.
-  * `python manage.py db init` to create a migration repository
-  * `python manage.py db migrate` to update the migration script
-  * `python manage.py db upgrade` to apply the migration to the database
-* Run `python manage.py runserver`. to run on the default ip and port
+  * `python3 manage.py db init` to create a migration repository
+  * `python3 manage.py db migrate` to update the migration script
+  * `python3 manage.py db upgrade` to apply the migration to the database
+* Run `python3 manage.py runserver`. to run on the default ip and port
 * View the app on `http://127.0.0.1:5000/`
 
 ## Use endpoints

@@ -8,11 +8,6 @@ parameters:
     type: string
     in: query
     required: false
-  - name: limit
-    description: Limit number of results per page e.g 13
-    type: integer
-    in: query
-    required: false
 responses:
   200:
     description: A list of created users
