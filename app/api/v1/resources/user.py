@@ -129,6 +129,9 @@ class UserResource(Resource):
 
             # to avoid duplicating a user name
             user_by_name = User.query.filter_by(username=username).first()
+            sql = text(
+                "SELECT * FROM users WHERE username='{}' LIMIT 1".format(username))
+            user = db.engine.execute(sql)
             user_result = {'user': [dict(it) for it in user]}
             if not user_result['user'] or (user_by_name and (user_by_name.id == user_id)):
                 sql = text("UPDATE users SET first_name='{}', last_name='{}', username='{}' WHERE id='{}'".format(
