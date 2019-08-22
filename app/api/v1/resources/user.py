@@ -53,15 +53,15 @@ class UserCollection(Resource):
 
         if q:
             q = q.lower()
-            sql = text("SELECT * FROM users WHERE username like '%{}%'".format(q))
+            sql = text(
+                "SELECT * FROM users WHERE username like '%{}%'".format(q))
         else:
             sql = text("SELECT * FROM users ORDER BY username ASC")
 
         users = db.engine.execute(sql)
-        if not users:
-            return make_response(jsonify({"message": "No user found"}), 404)
-
         users_result = {'users': [dict(user) for user in users]}
+        if not users_result['users']:
+            return make_response(jsonify({"message": "No user found"}), 404)
 
         return make_response(jsonify(users_result), 200)
 
@@ -79,8 +79,11 @@ class UserCollection(Resource):
         last_name = args.get("last_name", None)
         username = args.get("username", None)
 
-        user = User.query.filter_by(username=username).first()
-        if not user:
+        sql = text(
+            "SELECT * FROM users WHERE username='{}' LIMIT 1".format(username))
+        user = db.engine.execute(sql)
+        user_result = {'user': [dict(it) for it in user]}
+        if not user_result['user']:
             sql = text("INSERT into users (first_name, last_name, username) VALUES ('{}', '{}', '{}')".format(
                 first_name, last_name, username))
             db.engine.execute(sql)
@@ -98,9 +101,11 @@ class UserResource(Resource):
     def get(self, user_id):
         """Get a user"""
 
-        user = User.query.get(user_id)
-        if user:
-            return make_response(jsonify(user.user_as_dict()), 200)
+        sql = text("SELECT * FROM users WHERE id='{}'".format(user_id))
+        user = db.engine.execute(sql)
+        user_result = {'user': [dict(it) for it in user]}
+        if user_result['user']:
+            return make_response(jsonify(dict(user_result)), 200)
 
         return make_response(jsonify({"message": "User not found"}), 404)
 
@@ -108,8 +113,10 @@ class UserResource(Resource):
     def put(self, user_id):
         """Updates a user"""
 
-        user = User.query.get(user_id)
-        if user:
+        sql = text("SELECT * FROM users WHERE id='{}'".format(user_id))
+        user = db.engine.execute(sql)
+        user_result = {'user': [dict(it) for it in user]}
+        if user_result['user']:
             args = user_request_parser.parse_args()
 
             invalid_input = validate_inputs(args)
@@ -122,12 +129,11 @@ class UserResource(Resource):
 
             # to avoid duplicating a user name
             user_by_name = User.query.filter_by(username=username).first()
-            if not user_by_name or (user_by_name and (user_by_name.id == user_id)):
-                user.first_name = first_name
-                user.last_name = last_name
-                user.username = username
-
-                db.session.commit()
+            user_result = {'user': [dict(it) for it in user]}
+            if not user_result['user'] or (user_by_name and (user_by_name.id == user_id)):
+                sql = text("UPDATE users SET first_name='{}', last_name='{}', username='{}' WHERE id='{}'".format(
+                    first_name, last_name, username, user_id))
+                db.engine.execute(sql)
 
                 return make_response(jsonify({"message": "User updated"}), 200)
 
@@ -139,10 +145,12 @@ class UserResource(Resource):
     def delete(self, user_id):
         """Delete a user"""
 
-        user = User.query.get(user_id)
-        if user:
-            db.session.delete(user)
-            db.session.commit()
+        sql = text("SELECT * FROM users WHERE id='{}'".format(user_id))
+        user = db.engine.execute(sql)
+        user_result = {'user': [dict(it) for it in user]}
+        if user_result['user']:
+            sql = text("DELETE FROM users WHERE id='{}'".format(user_id))
+            db.engine.execute(sql)
 
             return make_response(jsonify({"message": "User deleted"}), 200)
 
