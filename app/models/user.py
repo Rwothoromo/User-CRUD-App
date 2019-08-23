@@ -15,6 +15,8 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(
     ), onupdate=db.func.current_timestamp())
+    questions = db.relationship('Question', order_by='Question.id')
+    answers = db.relationship('Answer', order_by='Answer.id')
 
     def __init__(self, first_name, last_name, username):
         self.first_name = first_name
@@ -23,8 +25,3 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User: {}>'.format(self.username)
-
-    def user_as_dict(self):
-        """Represent the user as a dict"""
-
-        return {u.name: getattr(self, u.name) for u in self.__table__.columns}

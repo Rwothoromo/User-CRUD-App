@@ -13,9 +13,11 @@ from flask_cors import CORS
 # local imports
 from config import app_config
 from app.db import db
-from app.models import category
 
-from app.api.v1.resources.user import UserCollection, UserResource
+from app.api.v1.views.answer import AnswerCollection, AnswerResource
+from app.api.v1.views.category import CategoryCollection, CategoryResource
+from app.api.v1.views.question import QuestionCollection, QuestionResource
+from app.api.v1.views.user import UserCollection, UserResource
 
 app = Flask(__name__)
 flask_config = os.environ.get('FLASK_CONFIG', 'production')
@@ -38,6 +40,18 @@ app.config['SWAGGER'] = {
             'name': 'User',
             'description': 'User CRUD'
         },
+        {
+            'name': 'Category',
+            'description': 'Question categories'
+        },
+        {
+            'name': 'Question',
+            'description': 'Question endpoints'
+        },
+        {
+            'name': 'Answer',
+            'description': 'Question answers'
+        }
     ]
 }
 
@@ -53,6 +67,12 @@ api = Api(api_bp, prefix="/api/v1")
 
 
 # Add resources to the API
+api.add_resource(AnswerCollection, '/answers/<int:question_id>')
+api.add_resource(AnswerResource, '/answers/<int:answer_id>')
+api.add_resource(CategoryCollection, '/categories')
+api.add_resource(CategoryResource, '/categories/<int:category_id>')
+api.add_resource(QuestionCollection, '/questions')
+api.add_resource(QuestionResource, '/questions/<int:question_id>')
 api.add_resource(UserCollection, '/users')
 api.add_resource(UserResource, '/users/<int:user_id>')
 

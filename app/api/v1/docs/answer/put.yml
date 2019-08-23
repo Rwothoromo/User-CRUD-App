@@ -1,52 +1,52 @@
-Endpoint that updates a category
+Endpoint that updates a answer
 ---
 tags:
-  - Category
+  - Answer
 parameters:
-  - name: category_id
-    description: category id
+  - name: answer_id
+    description: answer id
     type: integer
     in: path
     required: true
   - name: body
-    description: category creation data
+    description: answer creation data
     in: body
     required: true
     schema:
       type: object
       required:
-        - "name"
+        - "description"
       properties:
-        name:
+        description:
           type: "string"
-          example: "Object Oriented Programming"
+          example: "Uniqueness"
 
 responses:
   200:
-    description: Category updated
+    description: Answer updated
     schema:
       type: object
       properties:
         message:
           type: string
           enum:
-            - "Category updated"
+            - "Answer updated"
   404:
-    description: Category not found
+    description: Answer not found
     schema:
       type: object
       properties:
         message:
           type: string
           enum:
-            - "Category not found"
+            - "Answer not found"
 
   409:
-    description: Category already exists
+    description: Answer already exists
     schema:
       type: object
       properties:
         message:
           type: string
           enum:
-            - "Category by that name already exists"
+            - "Answer by that description already exists"

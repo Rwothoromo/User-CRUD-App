@@ -6,7 +6,7 @@ from sqlalchemy.sql import text
 
 from app.db import db
 from app.models.question import Question
-from app.api.v1.resources.helpers import validate_inputs
+from app.api.v1.helpers import validate_inputs
 
 
 # RequestParser and added arguments will know which fields to accept and how to validate those
@@ -18,7 +18,7 @@ question_request_parser.add_argument(
 class QuestionCollection(Resource):
     """Operate on a list of questions, to view and add them"""
 
-    @swag_from('docs/question/get_all.yml')
+    @swag_from('../docs/question/get_all.yml')
     def get(self):
         """Retrieves all questions"""
 
@@ -32,7 +32,7 @@ class QuestionCollection(Resource):
 
         return make_response(jsonify(questions_result), 200)
 
-    @swag_from('docs/question/post.yml')
+    @swag_from('../docs/question/post.yml')
     def post(self):
         """Register a question"""
 
@@ -71,7 +71,7 @@ class QuestionCollection(Resource):
 class QuestionResource(Resource):
     """Operate on a single Question, to view, update and delete it"""
 
-    @swag_from('docs/question/get.yml')
+    @swag_from('../docs/question/get.yml')
     def get(self, question_id):
         """Get a question"""
 
@@ -83,7 +83,7 @@ class QuestionResource(Resource):
 
         return make_response(jsonify({"message": "Question not found"}), 404)
 
-    @swag_from('docs/question/put.yml')
+    @swag_from('../docs/question/put.yml')
     def put(self, question_id):
         """Updates a question"""
 
@@ -125,7 +125,7 @@ class QuestionResource(Resource):
 
         return make_response(jsonify({"message": "Question not found"}), 404)
 
-    @swag_from('docs/question/delete.yml')
+    @swag_from('../docs/question/delete.yml')
     def delete(self, question_id):
         """Delete a question"""
 

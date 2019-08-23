@@ -1,0 +1,42 @@
+Endpoint that creates a answer
+---
+tags:
+  - Answer
+parameters:
+  - name: question_id
+    description: question id
+    type: integer
+    in: path
+    required: true
+  - name: body
+    description: answer registration data
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "description"
+      properties:
+        description:
+          type: "string"
+          example: "Uniqueness"
+
+responses:
+  201:
+    description: Answer added
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Answer added"
+  409:
+    description: Answer already exists
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Answer already exists"

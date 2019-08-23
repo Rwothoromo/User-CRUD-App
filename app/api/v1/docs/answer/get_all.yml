@@ -1,27 +1,27 @@
-Endpoint that retrieves a category
+Endpoint that retrieves all answers to a question
 ---
 tags:
-  - Category
+  - Answer
 parameters:
-  - name: category_id
-    description: category id
+  - name: question_id
+    description: question id
     type: integer
     in: path
     required: true
 responses:
   200:
-    description: A category
+    description: A list of created answers to a question
     schema:
       type: object
       properties:
-        category:
+        answers:
           type: array
   404:
-    description: Category not found
+    description: No answer found
     schema:
       type: object
       properties:
         message:
           type: string
           enum:
-            - "Category not found"
+            - "No answer found"

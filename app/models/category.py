@@ -10,6 +10,7 @@ class Category(db.Model):
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(
     ), onupdate=db.func.current_timestamp())
+    questions = db.relationship('Question', order_by='Question.id')
 
     def __init__(self, name):
         self.name = name

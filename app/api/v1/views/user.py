@@ -6,7 +6,7 @@ from sqlalchemy.sql import text
 
 from app.db import db
 from app.models.user import User
-from app.api.v1.resources.helpers import validate_inputs
+from app.api.v1.helpers import validate_inputs
 
 
 # RequestParser and added arguments will know which fields to accept and how to validate those
@@ -32,7 +32,7 @@ q_request_parser.add_argument(
 class UserCollection(Resource):
     """Operate on a list of users, to view and add them"""
 
-    @swag_from('docs/user/get_all.yml')
+    @swag_from('../docs/user/get_all.yml')
     def get(self):
         """Retrieves all users"""
 
@@ -53,7 +53,7 @@ class UserCollection(Resource):
 
         return make_response(jsonify(users_result), 200)
 
-    @swag_from('docs/user/post.yml')
+    @swag_from('../docs/user/post.yml')
     def post(self):
         """Register a user"""
 
@@ -85,7 +85,7 @@ class UserCollection(Resource):
 class UserResource(Resource):
     """Operate on a single User, to view, update and delete it"""
 
-    @swag_from('docs/user/get.yml')
+    @swag_from('../docs/user/get.yml')
     def get(self, user_id):
         """Get a user"""
 
@@ -97,7 +97,7 @@ class UserResource(Resource):
 
         return make_response(jsonify({"message": "User not found"}), 404)
 
-    @swag_from('docs/user/put.yml')
+    @swag_from('../docs/user/put.yml')
     def put(self, user_id):
         """Updates a user"""
 
@@ -131,7 +131,7 @@ class UserResource(Resource):
 
         return make_response(jsonify({"message": "User not found"}), 404)
 
-    @swag_from('docs/user/delete.yml')
+    @swag_from('../docs/user/delete.yml')
     def delete(self, user_id):
         """Delete a user"""
 

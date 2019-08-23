@@ -1,0 +1,30 @@
+Endpoint that deletes a answer
+---
+tags:
+  - Answer
+parameters:
+  - name: answer_id
+    description: answer id
+    type: integer
+    in: path
+    required: true
+
+responses:
+  200:
+    description: Answer deleted
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Answer deleted"
+  404:
+    description: Answer not found
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Answer not found"
