@@ -99,16 +99,7 @@ class QuestionResource(Resource):
                 "SELECT * FROM questions WHERE description='{}' LIMIT 1".format(description))
             question = db.engine.execute(sql)
             question_result = {'question': [dict(it) for it in question]}
-            if not question_result['question'] or (question_result['question'] and (question_result['question'].id == question_id)):
-
-                category_sql = text(
-                    "SELECT * FROM categories WHERE name='{}' LIMIT 1".format(category))
-                category_query = db.engine.execute(category_sql)
-                category_result = {'category': [
-                    dict(it) for it in category_query]}
-                if not category_result['category']:
-                    category_sql = text(
-                        "INSERT into categories (name) VALUES ('{}')".format(category))
+            if not question_result['question'] or (question_result['question'] and (question_result['question'][0]['id'] == question_id)):
 
                 sql = text("UPDATE questions SET description='{}', category='{}' WHERE id='{}'".format(
                     description, category, question_id))
