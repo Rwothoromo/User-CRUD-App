@@ -18,6 +18,20 @@ category_request_parser.add_argument(
 class CategoryCollection(Resource):
     """Operate on a list of categories, to view and add them"""
 
+    @swag_from('../docs/category/get_all.yml')
+    def get(self):
+        """Retrieves all categories"""
+
+        sql = text("SELECT * FROM categories ORDER BY name ASC")
+
+        categories = db.engine.execute(sql)
+        categories_result = {'categories': [
+            dict(category) for category in categories]}
+        if not categories_result['categories']:
+            return make_response(jsonify({"message": "No category found"}), 404)
+
+        return make_response(jsonify(categories_result), 200)
+
     @swag_from('../docs/category/post.yml')
     def post(self):
         """Register a category"""

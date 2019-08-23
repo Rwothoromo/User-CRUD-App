@@ -17,8 +17,8 @@ parameters:
           type: "string"
           example: "What is the distinctive feature of a set in python?"
         category:
-          type: "string"
-          example: "Data Structures"
+          type: "integer"
+          example: 1
 
 responses:
   201:

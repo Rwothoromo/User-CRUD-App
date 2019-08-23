@@ -13,6 +13,8 @@ from app.api.v1.helpers import validate_inputs
 question_request_parser = RequestParser(bundle_errors=True)
 question_request_parser.add_argument(
     "description", type=str, required=True, help="Description must be a valid string")
+question_request_parser.add_argument(
+    "category", type=int, required=True, help="Category must be a valid integer")
 
 
 class QuestionCollection(Resource):
@@ -50,23 +52,8 @@ class QuestionCollection(Resource):
         question = db.engine.execute(sql)
         question_result = {'question': [dict(it) for it in question]}
         if not question_result['question']:
-            category_sql = text(
-                "SELECT * FROM categories WHERE name='{}' LIMIT 1".format(category))
-            category_query = db.engine.execute(category_sql)
-            category_result = {'category': [dict(it) for it in category_query]}
-            if not category_result['category']:
-                category_sql = text(
-                    "INSERT into categories (name) VALUES ('{}')".format(category))
-                db.engine.execute(category_sql)
-
-                category_sql = text(
-                    "SELECT * FROM categories WHERE name='{}' LIMIT 1".format(category))
-                category_query = db.engine.execute(category_sql)
-                category_result = {'category': [
-                    dict(it) for it in category_query]}
-
             sql = text("INSERT into questions (description, category) VALUES ('{}', '{}')".format(
-                description, category_result['category'].id))
+                description, category))
             db.engine.execute(sql)
 
             return make_response(
