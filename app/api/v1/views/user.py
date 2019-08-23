@@ -42,9 +42,9 @@ class UserCollection(Resource):
         if q:
             q = q.lower()
             sql = text(
-                "SELECT * FROM users WHERE username like '%{}%'".format(q))
+                "SELECT * FROM users WHERE LOWER(first_name) like '%{}%' OR LOWER(last_name) like '%{}%' OR LOWER(username) like '%{}%'".format(q, q, q))
         else:
-            sql = text("SELECT * FROM users ORDER BY username ASC")
+            sql = text("SELECT * FROM users ORDER BY first_name ASC")
 
         users = db.engine.execute(sql)
         users_result = {'users': [dict(user) for user in users]}

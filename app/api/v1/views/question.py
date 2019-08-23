@@ -57,9 +57,16 @@ class QuestionCollection(Resource):
             if not category_result['category']:
                 category_sql = text(
                     "INSERT into categories (name) VALUES ('{}')".format(category))
+                db.engine.execute(category_sql)
+
+                category_sql = text(
+                    "SELECT * FROM categories WHERE name='{}' LIMIT 1".format(category))
+                category_query = db.engine.execute(category_sql)
+                category_result = {'category': [
+                    dict(it) for it in category_query]}
 
             sql = text("INSERT into questions (description, category) VALUES ('{}', '{}')".format(
-                description, category))
+                description, category_result['category'].id))
             db.engine.execute(sql)
 
             return make_response(
@@ -110,7 +117,8 @@ class QuestionResource(Resource):
                 category_sql = text(
                     "SELECT * FROM categories WHERE name='{}' LIMIT 1".format(category))
                 category_query = db.engine.execute(category_sql)
-                category_result = {'category': [dict(it) for it in category_query]}
+                category_result = {'category': [
+                    dict(it) for it in category_query]}
                 if not category_result['category']:
                     category_sql = text(
                         "INSERT into categories (name) VALUES ('{}')".format(category))
