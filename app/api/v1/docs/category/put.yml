@@ -1,0 +1,52 @@
+Endpoint that updates a category
+---
+tags:
+  - Category
+parameters:
+  - name: category_id
+    description: category id
+    type: integer
+    in: path
+    required: true
+  - name: body
+    description: category creation data
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "name"
+      properties:
+        name:
+          type: "string"
+          example: "Object Oriented Programming"
+
+responses:
+  200:
+    description: Category updated
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Category updated"
+  404:
+    description: Category not found
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Category not found"
+
+  409:
+    description: Category already exists
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Category already exists"

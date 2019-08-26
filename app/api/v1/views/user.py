@@ -120,7 +120,7 @@ class UserResource(Resource):
                 "SELECT * FROM users WHERE username='{}' LIMIT 1".format(username))
             user = db.engine.execute(sql)
             user_result = {'user': [dict(it) for it in user]}
-            if not user_result['user'] or (user_result['user'] and (user_result['user'].id == user_id)):
+            if not user_result['user'] or (user_result['user'] and (user_result['user']['id']== user_id)):
                 sql = text("UPDATE users SET first_name='{}', last_name='{}', username='{}' WHERE id='{}'".format(
                     first_name, last_name, username, user_id))
                 db.engine.execute(sql)

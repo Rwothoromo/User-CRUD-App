@@ -62,6 +62,39 @@ class CategoryCollection(Resource):
 class CategoryResource(Resource):
     """Operate on a single Category, to view, update and delete it"""
 
+    @swag_from('../docs/category/put.yml')
+    def put(self, category_id):
+        """Updates a category"""
+
+        sql = text("SELECT * FROM categories WHERE id='{}'".format(category_id))
+        category = db.engine.execute(sql)
+        category_result = {'category': [dict(it) for it in category]}
+        if category_result['category']:
+            args = category_request_parser.parse_args()
+
+            invalid_input = validate_inputs(args)
+            if invalid_input:
+                return make_response(jsonify({"message": "{} must be a string of maximum {} characters".format(invalid_input[2], invalid_input[1])}), 400)
+
+            description = args.get("description", None)
+            question = args.get("question", None)
+
+            # to avoid duplicating a category
+            sql = text(
+                "SELECT * FROM categories WHERE description='{}' LIMIT 1".format(description))
+            category = db.engine.execute(sql)
+            category_result = {'category': [dict(it) for it in category]}
+            if not category_result['category'] or (category_result['category'] and (category_result['category']['id']== category_id)):
+                sql = text("UPDATE categories SET description='{}', question='{}' WHERE id='{}'".format(
+                    description, question, category_id))
+                db.engine.execute(sql)
+
+                return make_response(jsonify({"message": "Category updated"}), 200)
+
+            return make_response(jsonify({"message": "Category already exists"}), 409)
+
+        return make_response(jsonify({"message": "Category not found"}), 404)
+
     @swag_from('../docs/category/delete.yml')
     def delete(self, category_id):
         """Delete a category"""

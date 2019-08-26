@@ -18,27 +18,6 @@ answer_request_parser.add_argument(
 class AnswerCollection(Resource):
     """Operate on a list of answers, to view and add them"""
 
-    @swag_from('../docs/answer/get_all.yml')
-    def get(self, question_id):
-        """Get all answers for a question"""
-
-        sql = text(
-            "SELECT * FROM questions WHERE id='{}'".format(question_id))
-        question = db.engine.execute(sql)
-        question_result = {'question': [dict(it) for it in question]}
-        if question_result['question']:
-            sql = text(
-                "SELECT * FROM answers WHERE question='{}' ORDER BY name".format(question_result['question'].id))
-            answers = db.engine.execute(sql)
-            answers_result = {'answers': [dict(answer) for answer in answers]}
-
-            if answers_result['answers']:
-                return make_response(jsonify(dict(answers_result)), 200)
-
-            return make_response(jsonify({"message": "Question answers not found"}), 404)
-
-        return make_response(jsonify({"message": "Question not found"}), 404)
-
     @swag_from('../docs/answer/post.yml')
     def post(self, question_id):
         """Register a answer"""
@@ -50,15 +29,14 @@ class AnswerCollection(Resource):
             return make_response(jsonify({"message": "{} must be a string of maximum {} characters".format(invalid_input[2], invalid_input[1])}), 400)
 
         description = args.get("description", None)
-        question = args.get("question", None)
 
         sql = text(
             "SELECT * FROM answers WHERE description='{}' LIMIT 1".format(description))
         answer = db.engine.execute(sql)
         answer_result = {'answer': [dict(it) for it in answer]}
         if not answer_result['answer']:
-            sql = text("INSERT into answers (description, question) VALUES ('{}', '{}')".format(
-                description, question))
+            sql = text("INSERT into answers (description, question) VALUES ('{}', {})".format(
+                description, question_id))
             db.engine.execute(sql)
 
             return make_response(
@@ -92,7 +70,7 @@ class AnswerResource(Resource):
                 "SELECT * FROM answers WHERE description='{}' LIMIT 1".format(description))
             answer = db.engine.execute(sql)
             answer_result = {'answer': [dict(it) for it in answer]}
-            if not answer_result['answer'] or (answer_result['answer'] and (answer_result['answer'].id == answer_id)):
+            if not answer_result['answer'] or (answer_result['answer'] and (answer_result['answer']['id']== answer_id)):
                 sql = text("UPDATE answers SET description='{}', question='{}' WHERE id='{}'".format(
                     description, question, answer_id))
                 db.engine.execute(sql)
