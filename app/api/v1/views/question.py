@@ -52,7 +52,7 @@ class QuestionCollection(Resource):
         question = db.engine.execute(sql)
         question_result = {'question': [dict(it) for it in question]}
         if not question_result['question']:
-            sql = text("INSERT into questions (description, category) VALUES ('{}', '{}')".format(
+            sql = text("INSERT into questions (description, category, created_at) VALUES ('{}', '{}', CURRENT_TIMESTAMP)".format(
                 description, category))
             db.engine.execute(sql)
 
@@ -118,7 +118,7 @@ class QuestionResource(Resource):
             question_result = {'question': [dict(it) for it in question]}
             if not question_result['question'] or (question_result['question'] and (question_result['question'][0]['id'] == question_id)):
 
-                sql = text("UPDATE questions SET description='{}', category='{}' WHERE id='{}'".format(
+                sql = text("UPDATE questions SET description='{}', category='{}', updated_at=CURRENT_TIMESTAMP WHERE id='{}'".format(
                     description, category, question_id))
                 db.engine.execute(sql)
 

@@ -50,7 +50,7 @@ class CategoryCollection(Resource):
         category_result = {'category': [dict(it) for it in category]}
         if not category_result['category']:
             sql = text(
-                "INSERT into categories (name) VALUES ('{}')".format(name))
+                "INSERT into categories (name, created_at) VALUES ('{}', CURRENT_TIMESTAMP)".format(name))
             db.engine.execute(sql)
 
             return make_response(
@@ -85,7 +85,7 @@ class CategoryResource(Resource):
             category = db.engine.execute(sql)
             category_result = {'category': [dict(it) for it in category]}
             if not category_result['category'] or (category_result['category'] and (category_result['category']['id']== category_id)):
-                sql = text("UPDATE categories SET description='{}', question='{}' WHERE id='{}'".format(
+                sql = text("UPDATE categories SET description='{}', question='{}', updated_at=CURRENT_TIMESTAMP WHERE id='{}'".format(
                     description, question, category_id))
                 db.engine.execute(sql)
 

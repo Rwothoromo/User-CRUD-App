@@ -35,7 +35,7 @@ class AnswerCollection(Resource):
         answer = db.engine.execute(sql)
         answer_result = {'answer': [dict(it) for it in answer]}
         if not answer_result['answer']:
-            sql = text("INSERT into answers (description, question) VALUES ('{}', {})".format(
+            sql = text("INSERT into answers (description, question, created_at) VALUES ('{}', {}, CURRENT_TIMESTAMP)".format(
                 description, question_id))
             db.engine.execute(sql)
 
@@ -71,7 +71,7 @@ class AnswerResource(Resource):
             answer = db.engine.execute(sql)
             answer_result = {'answer': [dict(it) for it in answer]}
             if not answer_result['answer'] or (answer_result['answer'] and (answer_result['answer']['id']== answer_id)):
-                sql = text("UPDATE answers SET description='{}', question='{}' WHERE id='{}'".format(
+                sql = text("UPDATE answers SET description='{}', question='{}', updated_at=CURRENT_TIMESTAMP WHERE id='{}'".format(
                     description, question, answer_id))
                 db.engine.execute(sql)
 

@@ -72,7 +72,7 @@ class UserCollection(Resource):
         user = db.engine.execute(sql)
         user_result = {'user': [dict(it) for it in user]}
         if not user_result['user']:
-            sql = text("INSERT into users (first_name, last_name, username) VALUES ('{}', '{}', '{}')".format(
+            sql = text("INSERT into users (first_name, last_name, username, created_at) VALUES ('{}', '{}', '{}', CURRENT_TIMESTAMP)".format(
                 first_name, last_name, username))
             db.engine.execute(sql)
 
@@ -121,7 +121,7 @@ class UserResource(Resource):
             user = db.engine.execute(sql)
             user_result = {'user': [dict(it) for it in user]}
             if not user_result['user'] or (user_result['user'] and (user_result['user']['id']== user_id)):
-                sql = text("UPDATE users SET first_name='{}', last_name='{}', username='{}' WHERE id='{}'".format(
+                sql = text("UPDATE users SET first_name='{}', last_name='{}', username='{}', updated_at=CURRENT_TIMESTAMP WHERE id='{}'".format(
                     first_name, last_name, username, user_id))
                 db.engine.execute(sql)
 
