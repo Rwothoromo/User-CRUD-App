@@ -16,6 +16,11 @@ question_request_parser.add_argument(
 question_request_parser.add_argument(
     "category", type=int, required=True, help="Category must be a valid integer")
 
+# for search by name q
+q_request_parser = RequestParser(bundle_errors=True)
+q_request_parser.add_argument(
+    "q", type=str, required=False, help="Search question by description")
+
 
 class QuestionCollection(Resource):
     """Operate on a list of questions, to view and add them"""
@@ -24,7 +29,14 @@ class QuestionCollection(Resource):
     def get(self):
         """Retrieves all questions"""
 
-        sql = text("SELECT * FROM questions ORDER BY description ASC")
+        args = q_request_parser.parse_args()
+        q = args.get('q', None)
+
+        if q:
+            sql = text(
+                "SELECT * FROM questions WHERE LOWER(description) like LOWER('%{}%')".format(q))
+        else:
+            sql = text("SELECT * FROM questions ORDER BY description ASC")
 
         questions = db.engine.execute(sql)
         questions_result = {'questions': [
@@ -69,7 +81,8 @@ class QuestionResource(Resource):
     def get(self, question_id):
         """Get a question"""
 
-        sql = text("SELECT * FROM question_details_view WHERE id={}".format(question_id))
+        sql = text(
+            "SELECT * FROM question_details_view WHERE id={}".format(question_id))
 
         question = db.engine.execute(sql)
         question_result = {'question': [dict(it) for it in question]}

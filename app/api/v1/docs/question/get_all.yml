@@ -2,6 +2,12 @@ Endpoint that retrieves all questions
 ---
 tags:
   - Question
+parameters:
+  - name: q
+    description: Search questions by description e.g "Python"
+    type: string
+    in: query
+    required: false
 responses:
   200:
     description: A list of created questions
