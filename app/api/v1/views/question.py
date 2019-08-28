@@ -69,23 +69,7 @@ class QuestionResource(Resource):
     def get(self, question_id):
         """Get a question"""
 
-        sql = text(
-            "SELECT \
-                q.id id, \
-                q.description question, \
-                q.created_by created_by_q, \
-                q.created_at created_at_q, \
-                a.id answer_id, \
-                a.description answer, \
-                a.created_by created_by_a, \
-                a.created_at created_at_a, \
-                c.name category \
-            FROM \
-                questions q \
-            LEFT JOIN answers a ON q.id = a.question \
-            LEFT JOIN categories c ON q.category = c.id \
-            WHERE q.id={}".format(question_id)
-        )
+        sql = text("SELECT * FROM question_details_view WHERE id={}".format(question_id))
 
         question = db.engine.execute(sql)
         question_result = {'question': [dict(it) for it in question]}
