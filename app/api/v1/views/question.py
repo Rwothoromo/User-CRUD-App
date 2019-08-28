@@ -7,6 +7,7 @@ from sqlalchemy.sql import text
 from app.db import db
 from app.models.question import Question
 from app.api.v1.helpers import validate_inputs
+from app.cache import cache
 
 
 # RequestParser and added arguments will know which fields to accept and how to validate those
@@ -25,6 +26,7 @@ q_request_parser.add_argument(
 class QuestionCollection(Resource):
     """Operate on a list of questions, to view and add them"""
 
+    @cache.cached(timeout=120, key_prefix='display_questions')
     @swag_from('../docs/question/get_all.yml')
     def get(self):
         """Retrieves all questions"""
@@ -67,6 +69,9 @@ class QuestionCollection(Resource):
             sql = text("INSERT into questions (description, category, created_at) VALUES ('{}', '{}', CURRENT_TIMESTAMP)".format(
                 description, category))
             db.engine.execute(sql)
+
+            # reset the cache
+            cache.delete('display_questions')
 
             return make_response(
                 jsonify({"message": "Question added"}), 201)
@@ -119,6 +124,9 @@ class QuestionResource(Resource):
                     description, category, question_id))
                 db.engine.execute(sql)
 
+                # reset the cache
+                cache.delete('display_questions')
+
                 return make_response(jsonify({"message": "Question updated"}), 200)
 
             return make_response(jsonify({"message": "Question already exists"}), 409)
@@ -136,6 +144,9 @@ class QuestionResource(Resource):
             sql = text(
                 "DELETE FROM questions WHERE id='{}'".format(question_id))
             db.engine.execute(sql)
+
+            # reset the cache
+            cache.delete('display_questions')
 
             return make_response(jsonify({"message": "Question deleted"}), 200)
 

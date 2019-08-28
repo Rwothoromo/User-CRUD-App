@@ -13,6 +13,7 @@ from flask_cors import CORS
 # local imports
 from config import app_config
 from app.db import db
+from app.cache import cache
 
 from app.api.v1.views.answer import AnswerCollection, AnswerResource
 from app.api.v1.views.category import CategoryCollection, CategoryResource
@@ -60,6 +61,8 @@ swagger = Swagger(app)
 db.init_app(app)
 
 cors = CORS(app)
+
+cache.init_app(app)
 
 # Add api Blueprint
 api_bp = Blueprint('api', __name__)
