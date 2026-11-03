@@ -22,7 +22,7 @@ mistune==3.3.3
 pep8==1.7.1
 psycopg2==2.7.6.1
 psycopg2-binary==2.7.6.1
-pylint==2.2.2
+pylint==4.0.9
 python-dateutil==2.7.5
 python-editor==1.0.3
 pytz==2018.9
